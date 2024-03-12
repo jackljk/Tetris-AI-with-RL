@@ -26,7 +26,7 @@ steps_done = 0
 n_actions = env.action_space.n
 # Get the number of state observations
 state = env.reset()
-n_observations = len(state)
+n_observations = state.shape
 
 policy_net = DQN(n_observations, n_actions).to(device)
 target_net = DQN(n_observations, n_actions).to(device)
@@ -47,6 +47,7 @@ def select_action(state):
             # t.max(1) will return the largest column value of each row.
             # second column on max result is index of where max element was
             # found, so we pick action with the larger expected reward.
+            print(state.shape)
             return policy_net(state).max(1).indices.view(1, 1)
     else:
         return torch.tensor([[env.action_space.sample()]], device=device, dtype=torch.long)
@@ -111,12 +112,17 @@ def train():
 
         done = False
 
+        # print the episode number
+        print(f"Episode {i_episode}")
+
         while not done:
+            env.render()
             # Select and perform an action
             action = select_action(state)
             next_state, reward, done, info = env.step(action.item())
             next_state = next_state.copy()
             next_state = torch.tensor(next_state, dtype=torch.float32, device=device).unsqueeze(0)
+            next_state = next_state.permute(0, 3, 1, 2)
             reward = torch.tensor([reward], device=device)
 
             # Move to the next state
@@ -124,13 +130,6 @@ def train():
 
             # Perform one step of the optimization (on the target network)
             optimize_model()
-            # Soft update of the target network's weights
-            # θ′ ← τ θ + (1 −τ )θ′
-            target_net_state_dict = target_net.state_dict()
-            policy_net_state_dict = policy_net.state_dict()
-            for key in policy_net_state_dict:
-                target_net_state_dict[key] = policy_net_state_dict[key]*TAU + target_net_state_dict[key]*(1-TAU)
-            target_net.load_state_dict(target_net_state_dict)
 
 
 
