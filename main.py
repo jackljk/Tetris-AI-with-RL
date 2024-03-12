@@ -47,7 +47,6 @@ def select_action(state):
             # t.max(1) will return the largest column value of each row.
             # second column on max result is index of where max element was
             # found, so we pick action with the larger expected reward.
-            print(state.shape)
             return policy_net(state).max(1).indices.view(1, 1)
     else:
         return torch.tensor([[env.action_space.sample()]], device=device, dtype=torch.long)
@@ -109,6 +108,9 @@ def train():
         state = env.reset()
         state = state.copy()
         state = torch.tensor(state, dtype=torch.float32, device=device).unsqueeze(0)
+        state = state.permute(0, 3, 1, 2)
+
+        total_reward = 0
 
         done = False
 
@@ -131,6 +133,13 @@ def train():
             # Perform one step of the optimization (on the target network)
             optimize_model()
 
+            total_reward += reward.item()
+
+        # Print results
+        print(f"Episode {i_episode} finished")
+        print(f"Total reward: {total_reward}")
+
+        
 
 
 
