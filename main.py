@@ -11,6 +11,9 @@ import random, datetime, os
 import gym
 from gym.spaces import Box
 from gym.wrappers import FrameStack
+from nes_py.wrappers import JoypadSpace
+import gym_tetris
+from gym_tetris.actions import MOVEMENT
 
 
 # Super Mario environment for OpenAI Gym
@@ -26,4 +29,14 @@ def evaluate():
     ...
 
 if __name__ == "__main__":
-    ...
+    env = gym_tetris.make('TetrisA-v0')
+    env = JoypadSpace(env, MOVEMENT)
+
+    done = True
+    for step in range(5000):
+        if done:
+            state = env.reset()
+        state, reward, done, info = env.step(env.action_space.sample())
+        env.render()
+
+    env.close()
