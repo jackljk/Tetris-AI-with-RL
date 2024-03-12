@@ -102,6 +102,8 @@ def train():
         num_episodes = 600
     else:
         num_episodes = 50
+    
+    best_reward = -float('inf')
 
     for i_episode in range(num_episodes):
         # Initialize the environment and get its state
@@ -139,7 +141,15 @@ def train():
         print(f"Episode {i_episode} finished")
         print(f"Total reward: {total_reward}")
 
-        
+        # Save checkpoint if best reward
+        if total_reward > best_reward:
+            best_reward = total_reward
+            torch.save({
+                'episode': i_episode,
+                'model_state_dict': policy_net.state_dict(),  # Assuming policy_net is your model
+                'optimizer_state_dict': optimizer.state_dict(),  # Assuming optimizer is defined outside
+                'reward': total_reward,
+            }, "model_checkpoint.pth")
 
 
 
