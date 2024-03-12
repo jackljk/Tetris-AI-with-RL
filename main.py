@@ -47,7 +47,9 @@ def select_action(state):
             # t.max(1) will return the largest column value of each row.
             # second column on max result is index of where max element was
             # found, so we pick action with the larger expected reward.
-            return policy_net(state).max(1).indices.view(1, 1)
+            action = policy_net(state).max(1).indices.view(1, 1)
+            print(action)
+            return action
     else:
         return torch.tensor([[env.action_space.sample()]], device=device, dtype=torch.long)
 
@@ -150,6 +152,15 @@ def train():
                 'optimizer_state_dict': optimizer.state_dict(),  # Assuming optimizer is defined outside
                 'reward': total_reward,
             }, "model_checkpoint.pth")
+
+
+        target_net_state_dict = target_net.state_dict()
+        policy_net_state_dict = policy_net.state_dict()
+        for key in policy_net_state_dict:
+            target_net_state_dict[key] = policy_net_state_dict[key]*TAU + target_net_state_dict[key]*(1-TAU)
+        target_net.load_state_dict(target_net_state_dict)
+
+
 
 
 
