@@ -1,0 +1,8 @@
+
+torch
+torchvision
+Pillow
+numpy
+gym
+nes_py
+gym_tetris
