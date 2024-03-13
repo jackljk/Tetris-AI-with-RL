@@ -48,7 +48,6 @@ def select_action(state):
             # second column on max result is index of where max element was
             # found, so we pick action with the larger expected reward.
             action = policy_net(state).max(1).indices.view(1, 1)
-            print(action)
             return action
     else:
         return torch.tensor([[env.action_space.sample()]], device=device, dtype=torch.long)
@@ -122,7 +121,7 @@ def train():
         print(f"Episode {i_episode}")
 
         while not done:
-            env.render()
+            # env.render()
             # Select and perform an action
             action = select_action(state)
             next_state, reward, done, info = env.step(action.item())
