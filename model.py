@@ -25,3 +25,17 @@ class DQN(nn.Module):
         x = x.reshape(-1, 27 * 29 * 32)
         x = F.relu(self.fc1(x))
         return self.fc2(x)
+
+class linear_DQN(nn.Module):
+    def __init__(self, input_size, n_actions):
+        super(linear_DQN, self).__init__()
+        # Assuming input_size = 22 for the tensor of 22 values
+        self.fc1 = nn.Linear(input_size, 128)  # First fully connected layer
+        self.fc2 = nn.Linear(128, 64)          # Second fully connected layer
+        self.fc3 = nn.Linear(64, n_actions)    # Output layer with n_actions
+
+    def forward(self, x):
+        x = F.relu(self.fc1(x))  # Activation function after first layer
+        x = F.relu(self.fc2(x))  # Activation function after second layer
+        x = self.fc3(x) 
+        return x
