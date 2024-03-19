@@ -12,6 +12,6 @@ Welcome to our project, Reinforcement Learning Tetris AI. This project attempts 
 
 
 ### Installation
-$${\color{red}Disclaimer: The instructions below are designed for Mac devices}$$
+Disclaimer: The instructions below are designed for Mac devices
 1. Run this install in your terminal `pip install gym-tetris`
 2. Go to your terminal to find 
