@@ -2,8 +2,8 @@ import torch
 import random, datetime, os
 from agent import *
 from nes_py.wrappers import JoypadSpace
-import gym_tetris
-from gym_tetris.actions import MOVEMENT
+import gym_tetris_edited
+from gym_tetris_edited.actions import MOVEMENT
 from model import DQN
 from torch import optim
 import math
@@ -16,7 +16,7 @@ EPS_END = 0.05
 EPS_DECAY = 1000
 TAU = 1e-3
 LR = 1e-4
-env = gym_tetris.make('TetrisA-v0')
+env = gym_tetris_edited.make('TetrisA-v0')
 env = JoypadSpace(env, MOVEMENT)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

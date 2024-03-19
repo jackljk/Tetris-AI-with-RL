@@ -101,7 +101,12 @@ class JoypadSpace(Wrapper):
 
         state, reward, done, info = self.env.step(self._action_map[action])
 
-        cur_piece = piece_dict[info["current_piece"]]
+        try:
+            cur_piece = piece_dict[info["current_piece"]]
+        except:
+            cur_piece = 0
+            print("Error: ", info)
+
         cur_piece_ohe = np.zeros(19)
         try:
             cur_piece_ohe[cur_piece] = 1
