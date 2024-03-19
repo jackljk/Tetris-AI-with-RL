@@ -1,2 +1,2 @@
 # Tetris AI with RL
- Building a tetris AI using Reinforcement Learning
+1. Run this install in your terminal `pip install gym-tetris`
