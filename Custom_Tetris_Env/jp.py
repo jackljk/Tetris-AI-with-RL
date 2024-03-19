@@ -98,26 +98,18 @@ class JoypadSpace(Wrapper):
             final_array = np.append(combined_array, [cleared_lines])
             return final_array
 
-        try:
-            action = int(action)
-            state, reward, done, info = self.env.step(self._action_map[action])
-        except Exception as e:
-            print("Error: ", e)
-            print("Error: ", action)
-            print("Error: ", type(action))
-            print("Error: ", self._action_map)
+        action = int(action)
+        state, reward, done, info = self.env.step(self._action_map[action])
 
+        # Catch exception if current_piece is none which can happen at the start of the game
         try:
             cur_piece = piece_dict[info["current_piece"]]
         except:
             cur_piece = 0
-            print("Error: ", info)
+
 
         cur_piece_ohe = np.zeros(19)
-        try:
-            cur_piece_ohe[cur_piece] = 1
-        except:
-            pass
+        cur_piece_ohe[cur_piece] = 1
 
         cleared_lines = info["number_of_lines"]
         board, holes, boundaries = process_board(self.env.board)
