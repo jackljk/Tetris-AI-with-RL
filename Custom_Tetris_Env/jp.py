@@ -98,8 +98,14 @@ class JoypadSpace(Wrapper):
             final_array = np.append(combined_array, [cleared_lines])
             return final_array
 
-
-        state, reward, done, info = self.env.step(self._action_map[action])
+        try:
+            action = int(action)
+            state, reward, done, info = self.env.step(self._action_map[action])
+        except Exception as e:
+            print("Error: ", e)
+            print("Error: ", action)
+            print("Error: ", type(action))
+            print("Error: ", self._action_map)
 
         try:
             cur_piece = piece_dict[info["current_piece"]]
