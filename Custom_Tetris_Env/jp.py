@@ -56,7 +56,7 @@ class JoypadSpace(Wrapper):
             self._action_map[action] = byte_action
             self._action_meanings[action] = ' '.join(button_list)
 
-        self.observation_space = Box(low=0, high=np.inf, shape=(40,), dtype=np.float32)
+        self.observation_space = Box(low=0, high=np.inf, shape=(39,), dtype=np.float32)
 
     def step(self, action):
         """
@@ -93,10 +93,10 @@ class JoypadSpace(Wrapper):
             
             return board,holes,boundaries
 
-        def concat_data(holes,boundaries,cur_piece,cleared_lines):
+        def concat_data(holes,boundaries,cur_piece):
             combined_array = np.concatenate((holes, boundaries,cur_piece))
-            final_array = np.append(combined_array, [cleared_lines])
-            return final_array
+            # final_array = np.append(combined_array, [cleared_lines])
+            return combined_array
 
         action = int(action)
         state, reward, done, info = self.env.step(self._action_map[action])
@@ -111,9 +111,9 @@ class JoypadSpace(Wrapper):
         cur_piece_ohe = np.zeros(19)
         cur_piece_ohe[cur_piece] = 1
 
-        cleared_lines = info["number_of_lines"]
+        # cleared_lines = info["number_of_lines"]
         board, holes, boundaries = process_board(self.env.board)
-        state_data = concat_data(holes,boundaries,cur_piece_ohe,cleared_lines)
+        state_data = concat_data(holes,boundaries,cur_piece_ohe)
         state_data = state_data.copy()
         
         state = state_data
@@ -123,7 +123,7 @@ class JoypadSpace(Wrapper):
     def reset(self):
         """Reset the environment and return the initial observation."""
         self.env.reset()
-        return np.zeros(40)
+        return np.zeros(39)
         return self.env.reset()
 
     def get_keys_to_action(self):
