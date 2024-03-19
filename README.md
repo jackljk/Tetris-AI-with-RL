@@ -1,2 +1,17 @@
-# Tetris AI with RL
+# Reinforcement Learning Tetris AI
+
+## Description
+Welcome to our project, Reinforcement Learning Tetris AI. This project attempts to train a reinforcement learning agent to play Tetris efficiently. 
+
+
+
+## Table of Contents
+
+1. [Installation](#installation)
+2. [Instructions on How to Run the Code](#instructions)
+
+
+### Installation
+$${\color{red}Disclaimer: The instructions below are designed for Mac devices}$$
 1. Run this install in your terminal `pip install gym-tetris`
+2. Go to your terminal to find 
