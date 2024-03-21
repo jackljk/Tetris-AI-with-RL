@@ -331,7 +331,7 @@ class GameState:
         return image_data
 
     def getActionSet(self):
-        return range(6)
+        return range(162)
 
     def getHeight(self):
         stack_height = 0
