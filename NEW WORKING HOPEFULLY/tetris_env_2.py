@@ -2,20 +2,9 @@ import numpy as np
 import gym
 from gym import spaces
 import tetris_engine as game
+from CONSTANTS import *
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 400,200
-
-ACTION_MAP = [
-    [1, 1, 1, 1, 4]               # Move 'O' to x1
-    [1, 1, 1, 4]                  # Move 'O' to x2
-    [1, 1, 4]                     # Move 'O' to x3
-    [1, 4]                        # Move 'O' to x4
-    [0, 4]                        # Move 'O' to x5
-    [3, 3, 3, 3, 4]               # Move 'O' to x6
-    [3, 3, 3, 4]                  # Move 'O' to x7
-    [3, 3, 4]                     # Move 'O' to x8
-    [3, 4]                        # Move 'O' to x9
-]
 
 
 class TetrisEnv(gym.Env):
