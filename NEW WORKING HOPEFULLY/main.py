@@ -48,6 +48,7 @@ def dqn():
 
         # Game
         while not done and (not max_steps or steps < max_steps):
+            curr_piece = env.game_state.fallingPiece['shape']
             states, reward, done, _ = env.step(best_action) # take a step to start the round
             best_state = agent.best_state(states) # get the best state from the model
             
