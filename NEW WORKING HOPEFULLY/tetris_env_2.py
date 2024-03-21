@@ -13,7 +13,7 @@ class TetrisEnv(gym.Env):
     def __init__(self):
         # open up a game state to communicate with emulator
         self.game_state = game.GameState()
-        self._action_set = self.game_state.getActionSet()
+        self._action_set = range(190) # 190 possible actions 10 for "O", 20 for "I", "Z", "S", 40 for "J", "L", "T"
         self.action_space = spaces.Discrete(len(self._action_set))
         self.observation_space = spaces.Box(low=0, high=np.inf, shape=(146,), dtype=np.float32)
         self.viewer = None
@@ -107,19 +107,7 @@ class TetrisEnv(gym.Env):
                     boundaries_vector[col] = board.shape[0] - first_block_index[0]
 
             return holes_vector, boundaries_vector
-   
-        
-        def piece_data_tensor():
-            piece_map ={"I":0, "J": 1, "L":2, "O":3, "S":4, "T":5, "Z":6}
-            piece_array = np.zeros(2)
-            if self.game_state.fallingPiece:
-                piece = self.game_state.fallingPiece
-                piece_array[0] = piece_map[piece['shape']]
-                piece_array[1] = piece['rotation']
-            return piece_array
 
-        
-        
 
         reward = 0.0
         
@@ -131,6 +119,8 @@ class TetrisEnv(gym.Env):
             reward += reward_now
             if terminal:
                 break
+
+
         self.game_state.frame_step([1,0,0,0,0,0])
         curr_board = board_data_tensor(self.game_state.board)
         
