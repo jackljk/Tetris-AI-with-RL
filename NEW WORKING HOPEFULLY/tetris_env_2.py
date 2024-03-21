@@ -5,6 +5,18 @@ import tetris_engine as game
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 400,200
 
+ACTION_MAP = [
+    [1, 1, 1, 1, 4]               # Move 'O' to x1
+    [1, 1, 1, 4]                  # Move 'O' to x2
+    [1, 1, 4]                     # Move 'O' to x3
+    [1, 4]                        # Move 'O' to x4
+    [0, 4]                        # Move 'O' to x5
+    [3, 3, 3, 3, 4]               # Move 'O' to x6
+    [3, 3, 3, 4]                  # Move 'O' to x7
+    [3, 3, 4]                     # Move 'O' to x8
+    [3, 4]                        # Move 'O' to x9
+]
+
 
 class TetrisEnv(gym.Env):
     metadata = {'render.modes': ['human', 'rgb_array']}
@@ -70,7 +82,7 @@ class TetrisEnv(gym.Env):
                     ]
                     states[i + rotation*12] = state
             
-            return np.concatenate(states)
+            return states
         
         def get_rotations(piece):
             """
@@ -128,7 +140,8 @@ class TetrisEnv(gym.Env):
 
         reward = 0.0
         
-        state, reward, terminal = self.game_state.frame_step(self._action_set)
+        state, reward, terminal, end_round = self.game_state.frame_step(self._action_set)
+        
     
         states = np.concatenate([states, piece_data_tensor()])
         return states, reward, terminal, {}
