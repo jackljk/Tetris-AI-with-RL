@@ -25,7 +25,7 @@ def dqn():
     render_delay = None
     activations = ['relu', 'relu', 'linear']
 
-    agent = DQNAgent(env.get_state_size(),
+    agent = DQNAgent(env.n_actions(),
                      n_neurons=n_neurons, activations=activations,
                      epsilon_stop_episode=epsilon_stop_episode, mem_size=mem_size,
                      discount=discount, replay_start_size=replay_start_size)
