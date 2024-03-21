@@ -15,7 +15,7 @@ class TetrisEnv(gym.Env):
         self.game_state = game.GameState()
         self._action_set = range(190) # 190 possible actions 10 for "O", 20 for "I", "Z", "S", 40 for "J", "L", "T"
         self.action_space = spaces.Discrete(len(self._action_set))
-        self.observation_space = spaces.Box(low=0, high=np.inf, shape=(146,), dtype=np.float32)
+        self.observation_space = spaces.Box(low=0, high=np.inf, shape=(190,), dtype=np.float32)
         self.viewer = None
 
 
@@ -33,11 +33,6 @@ class TetrisEnv(gym.Env):
 
 
         self.game_state.frame_step([1,0,0,0,0,0])
-        
-        
-        #print(states)
-        #print(piece_data_tensor())
-        #states = np.concatenate([states, np.array([piece_data_tensor()])])
         return reward, terminal 
 
     def get_image(self):
@@ -53,7 +48,7 @@ class TetrisEnv(gym.Env):
         do_nothing[0] = 1
         self.observation_space = spaces.Box(low=0, high=np.inf, shape=(146,), dtype=np.float32)
         state, _, _= self.game_state.frame_step(do_nothing)
-        return np.zeros(146)
+        return [0 for _ in range(190)]
 
     def render(self, mode='human', close=False):
         if close:
