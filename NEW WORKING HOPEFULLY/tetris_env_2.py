@@ -37,6 +37,9 @@ class TetrisEnv(gym.Env):
 
     def get_image(self):
         return self.game_state.getImage()
+    
+    def get_state_size(self):
+        return 3
 
     @property
     def n_actions(self):
@@ -48,7 +51,7 @@ class TetrisEnv(gym.Env):
         do_nothing[0] = 1
         self.observation_space = spaces.Box(low=0, high=np.inf, shape=(146,), dtype=np.float32)
         state, _, _= self.game_state.frame_step(do_nothing)
-        return [0 for _ in range(190)]
+        return [0, 0, 0]
 
     def render(self, mode='human', close=False):
         if close:
