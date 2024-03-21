@@ -213,3 +213,14 @@ ACTION_MAP = [
     [4],                           # Move 'L' to x10 (PAD)
 
 ]
+
+
+PIECE_TO_ACTION = {
+    'O': 0,
+    'Z': 10,
+    'S': 30,
+    'I': 50,
+    'J': 70,
+    'L': 110,
+    'T': 150
+}

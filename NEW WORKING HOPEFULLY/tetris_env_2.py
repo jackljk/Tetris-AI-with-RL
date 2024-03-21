@@ -20,7 +20,58 @@ class TetrisEnv(gym.Env):
 
 
     def step(self, a):
+        reward = 0.0
         
+        actions = ACTION_MAP[a]
+        for action in actions:
+            self._action_set = np.zeros([len(self._action_set)])
+            self._action_set[action] = 1
+            state, reward_now, terminal = self.game_state.frame_step(self._action_set)
+            reward += reward_now
+            if terminal:
+                break
+
+
+        self.game_state.frame_step([1,0,0,0,0,0])
+        
+        
+        #print(states)
+        #print(piece_data_tensor())
+        #states = np.concatenate([states, np.array([piece_data_tensor()])])
+        return reward, terminal 
+
+    def get_image(self):
+        return self.game_state.getImage()
+
+    @property
+    def n_actions(self):
+        return len(self._action_set)
+
+    # return: (states, observations)
+    def reset(self):
+        do_nothing = np.zeros(len(self._action_set))
+        do_nothing[0] = 1
+        self.observation_space = spaces.Box(low=0, high=np.inf, shape=(146,), dtype=np.float32)
+        state, _, _= self.game_state.frame_step(do_nothing)
+        return np.zeros(146)
+
+    def render(self, mode='human', close=False):
+        if close:
+            if self.viewer is not None:
+                self.viewer.close()
+                self.viewer = None
+            return
+        img = self.get_image()
+        if mode == 'rgb_array':
+            return img
+        elif mode == 'human':
+            from gym.envs.classic_control import rendering
+            if self.viewer is None:
+                self.viewer = rendering.SimpleImageViewer()
+            self.viewer.imshow(img)
+
+
+    def get_all_states(self):
         def board_data_tensor(board):
             board_array = np.array(board)
             converted_array = np.where(board_array == '.', 0, 1)
@@ -107,58 +158,10 @@ class TetrisEnv(gym.Env):
                     boundaries_vector[col] = board.shape[0] - first_block_index[0]
 
             return holes_vector, boundaries_vector
-
-
-        reward = 0.0
         
-        actions = ACTION_MAP[a]
-        for action in actions:
-            self._action_set = np.zeros([len(self._action_set)])
-            self._action_set[action] = 1
-            state, reward_now, terminal = self.game_state.frame_step(self._action_set)
-            reward += reward_now
-            if terminal:
-                break
-
-
-        self.game_state.frame_step([1,0,0,0,0,0])
         curr_board = board_data_tensor(self.game_state.board)
         
         curr_piece = self.game_state.fallingPiece
         states = calculate_possible_states(curr_board, curr_piece)
-        
-        #print(states)
-        #print(piece_data_tensor())
-        #states = np.concatenate([states, np.array([piece_data_tensor()])])
-        return states, reward, terminal, {}
-
-    def get_image(self):
-        return self.game_state.getImage()
-
-    @property
-    def n_actions(self):
-        return len(self._action_set)
-
-    # return: (states, observations)
-    def reset(self):
-        do_nothing = np.zeros(len(self._action_set))
-        do_nothing[0] = 1
-        self.observation_space = spaces.Box(low=0, high=np.inf, shape=(146,), dtype=np.float32)
-        state, _, _= self.game_state.frame_step(do_nothing)
-        return np.zeros(146)
-
-    def render(self, mode='human', close=False):
-        if close:
-            if self.viewer is not None:
-                self.viewer.close()
-                self.viewer = None
-            return
-        img = self.get_image()
-        if mode == 'rgb_array':
-            return img
-        elif mode == 'human':
-            from gym.envs.classic_control import rendering
-            if self.viewer is None:
-                self.viewer = rendering.SimpleImageViewer()
-            self.viewer.imshow(img)
+        return states
 

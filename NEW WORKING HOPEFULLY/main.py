@@ -1,15 +1,16 @@
-from dqn_agent import DQNAgent
-from tetris import Tetris
+from customDQN import DQNAgent
+from tetris_env_2 import TetrisEnv
 from datetime import datetime
 from statistics import mean, median
 import random
 from logs import CustomTensorBoard
 from tqdm import tqdm
+from CONSTANTS import PIECE_TO_ACTION
         
 
 # Run dqn with Tetris
 def dqn():
-    env = Tetris()
+    env = TetrisEnv()
     episodes = 2000
     max_steps = None
     epsilon_stop_episode = 1500
@@ -49,24 +50,18 @@ def dqn():
         # Game
         while not done and (not max_steps or steps < max_steps):
             curr_piece = env.game_state.fallingPiece['shape']
-            states, reward, done, _ = env.step(best_action) # take a step to start the round
+            states = env.get_all_states()
             best_state = agent.best_state(states) # get the best state from the model
             
             best_action = None
-            for action, state in states.items(): # get the action that corresponds to the best state
+            for i, state in enumerate(states): # get the action that corresponds to the best state
                 if state == best_state:
-                    best_action = action
+                    best_action = i * PIECE_TO_ACTION[curr_piece]
                     break
             
-            # execute the best action and get the reward
-            for act in best_action:
-                _, _reward, done, _ = env.game_state.frame_step(env._action_set[act])
-                reward += _reward
-                if done:
-                    break
-                
-            reward = reward/len(best_action) # normalize the reward
+            reward, done = env.step(best_action) # take the best action
             
+
             agent.add_to_memory(current_state, states[best_action], reward, done) # add the play to the replay memory buffer
 
             # Save to logs
