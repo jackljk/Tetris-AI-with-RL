@@ -39,6 +39,7 @@ def dqn():
         current_state = env.reset()
         done = False
         steps = 0
+        best_action = 0
 
         if render_every and episode % render_every == 0:
             render = True
@@ -47,20 +48,28 @@ def dqn():
 
         # Game
         while not done and (not max_steps or steps < max_steps):
-            next_states = env.get_next_states()
-            best_state = agent.best_state(next_states.values())
+            states, reward, done, _ = env.step(best_action) # take a step to start the round
+            best_state = agent.best_state(states) # get the best state from the model
             
             best_action = None
-            for action, state in next_states.items():
+            for action, state in states.items(): # get the action that corresponds to the best state
                 if state == best_state:
                     best_action = action
                     break
-
-            reward, done = env.play(best_action[0], best_action[1], render=render,
-                                    render_delay=render_delay)
             
-            agent.add_to_memory(current_state, next_states[best_action], reward, done)
-            current_state = next_states[best_action]
+            # execute the best action and get the reward
+            for act in best_action:
+                _, _reward, done, _ = env.game_state.frame_step(env._action_set[act])
+                reward += _reward
+                if done:
+                    break
+                
+            reward = reward/len(best_action) # normalize the reward
+            
+            agent.add_to_memory(current_state, states[best_action], reward, done) # add the play to the replay memory buffer
+
+            # Save to logs
+            current_state = states[best_action]
             steps += 1
 
         scores.append(env.get_game_score())
