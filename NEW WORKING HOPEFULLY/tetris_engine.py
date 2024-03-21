@@ -381,7 +381,7 @@ class GameState:
         # return a random new piece in a random rotation and color
         shape = random.choice(list(PIECES.keys()))
         newPiece = {'shape': shape,
-                    'rotation': random.randint(0, len(PIECES[shape]) - 1),
+                    'rotation': 0,
                     'x': int(BOARDWIDTH / 2) - int(TEMPLATEWIDTH / 2),
                     'y': 0, # start it above the self.board (i.e. less than 0)
                     'color': random.randint(0, len(COLORS)-1)}
@@ -443,11 +443,19 @@ class GameState:
                         return False
             return True
         
-        boards = [0 for _ in range(-2, BOARDWIDTH)]
+        boards = [0 for _ in range(10)]
         sim_piece = piece_info.copy()
 
+
+        range_start = 0
+        for x in range(TEMPLATEWIDTH):
+            p = PIECES[sim_piece['shape']][sim_piece['rotation']]
+            if p[0][x] == BLANK and p[1][x] == BLANK and p[2][x] == BLANK:
+                range_start -= 1
+        range_end = BOARDWIDTH - range_start
+
         # Simulate dropping the piece onto the board at each x position
-        for board_x in range(-2, BOARDWIDTH):
+        for board_x in range(range_start, range_end):
             sim_piece['x'] = board_x
             if _isValidPosition(self, sim_piece):
                 piece = PIECES[sim_piece['shape']][sim_piece['rotation']]
@@ -469,7 +477,7 @@ class GameState:
                             cell_y = y + y_position
                             board_copy[cell_x][cell_y] = 1
 
-                boards[board_x + 2] = board_copy
+                boards[board_x + range_start] = board_copy
             
         
         return boards

@@ -21,10 +21,6 @@ class TetrisEnv(gym.Env):
 
     def step(self, a):
         
-        
-        
-       
-        
         def board_data_tensor(board):
             board_array = np.array(board)
             converted_array = np.where(board_array == '.', 0, 1)
@@ -38,7 +34,12 @@ class TetrisEnv(gym.Env):
             :param piece: A representation of the Tetris piece, including its shape and rotations.
             :return: A list of states, where each state is a dictionary with 'holes', 'bumpiness', and 'lines_cleared'.
             """
-            states = [[0, 0, 0] for _ in range(48)]
+            if piece['shape'] == 'O':
+                return [[-float('inf'), -float('inf'), -float('inf')] for _ in range(10)]
+            elif piece['shape'] == 'I' or piece['shape'] == 'Z' or piece['shape'] == 'S':
+                states = [[-float('inf'), -float('inf'), -float('inf')] for _ in range(20)]
+            else:
+                states = [[-float('inf'), -float('inf'), -float('inf')] for _ in range(40)]
 
 
             rotations = get_rotations(piece['shape'])
@@ -53,9 +54,9 @@ class TetrisEnv(gym.Env):
                 holes, boundaries, lines_cleared_list = [], [], []
                 for sim_board in sim_boards:
                     if sim_board == 0:
-                        holes.append(0)
-                        boundaries.append(0)
-                        lines_cleared_list.append(0)
+                        holes.append(-float('inf'))
+                        boundaries.append(-float('inf'))
+                        lines_cleared_list.append(-float('inf'))
                         continue
 
                     sim_board = board_data_tensor(sim_board)
@@ -71,7 +72,7 @@ class TetrisEnv(gym.Env):
                         boundaries[i],
                         lines_cleared_list[i]
                     ]
-                    states[i + rotation*12] = state
+                    states[i + rotation*10] = state
             
             return states
         
