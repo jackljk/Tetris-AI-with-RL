@@ -33,7 +33,7 @@ def dqn():
     # log = CustomTensorBoard(log_dir=log_dir)
 
     scores = []
-
+    model_path = './newmodel.tf' 
     for episode in tqdm(range(episodes)):
         current_state = env.reset()
         done = False
@@ -71,6 +71,7 @@ def dqn():
         # Train
         if episode % train_every == 0:
             agent.train(batch_size=batch_size, epochs=epochs)
+            agent.model.save(model_path)
 
         # Logs
         if log_every and episode and episode % log_every == 0:
@@ -79,5 +80,7 @@ def dqn():
             max_score = max(scores[-log_every:])
 
             print(f'Episode: {episode}, Score: {avg_score}, Min: {min_score}, Max: {max_score}, Epsilon: {agent.epsilon}')
+        
+        
 
 
