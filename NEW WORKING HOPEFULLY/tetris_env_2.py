@@ -31,8 +31,8 @@ class TetrisEnv(gym.Env):
             if terminal:
                 break
 
-
-        self.game_state.frame_step([1,0,0,0,0,0])
+        while self.game_state.fallingPiece is None:
+            self.game_state.frame_step([1,0,0,0,0,0])
         return reward, terminal 
 
     def get_image(self):

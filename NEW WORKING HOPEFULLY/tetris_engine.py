@@ -369,6 +369,9 @@ class GameState:
     def makeTextObjs(self,text, font, color):
         surf = font.render(text, True, color)
         return surf, surf.get_rect()
+    
+    def get_score(self):
+        return self.score
 
     def calculateLevelAndFallFreq(self):
         # Based on the self.score, return the self.level the player is on and

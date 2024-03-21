@@ -2,8 +2,6 @@ from customDQN import DQNAgent
 from tetris_env_2 import TetrisEnv
 from datetime import datetime
 from statistics import mean, median
-import random
-from logs import CustomTensorBoard
 from tqdm import tqdm
 from CONSTANTS import PIECE_TO_ACTION
         
@@ -26,7 +24,7 @@ def dqn():
     render_delay = None
     activations = ['relu', 'relu', 'linear']
 
-    agent = DQNAgent(env.n_actions(),
+    agent = DQNAgent(env.n_actions,
                      n_neurons=n_neurons, activations=activations,
                      epsilon_stop_episode=epsilon_stop_episode, mem_size=mem_size,
                      discount=discount, replay_start_size=replay_start_size)
@@ -56,19 +54,19 @@ def dqn():
             best_action = None
             for i, state in enumerate(states): # get the action that corresponds to the best state
                 if state == best_state:
-                    best_action = i * PIECE_TO_ACTION[curr_piece]
+                    best_action = i + PIECE_TO_ACTION[curr_piece]
                     break
             
             reward, done = env.step(best_action) # take the best action
             
 
-            agent.add_to_memory(current_state, states[best_action], reward, done) # add the play to the replay memory buffer
+            agent.add_to_memory(current_state, best_state, reward, done) # add the play to the replay memory buffer
 
             # Save to logs
-            current_state = states[best_action]
+            current_state = best_state.copy()
             steps += 1
 
-        scores.append(env.get_game_score())
+        scores.append(env.game_state.get_score())
 
         # Train
         if episode % train_every == 0:
