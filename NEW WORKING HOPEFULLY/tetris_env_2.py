@@ -20,8 +20,10 @@ class TetrisEnv(gym.Env):
 
 
     def step(self, a):
-        self._action_set = np.zeros([len(self._action_set)])
-        self._action_set[a] = 1
+        
+        
+        
+       
         
         def board_data_tensor(board):
             board_array = np.array(board)
@@ -115,24 +117,28 @@ class TetrisEnv(gym.Env):
                 piece_array[1] = piece['rotation']
             return piece_array
 
-        curr_board = board_data_tensor(self.game_state.board)
-
-        curr_piece = self.game_state.fallingPiece
-        if not curr_piece:
-            curr_piece = {
-                'shape': 'O',
-                'rotation': 0,
-                'x': 0,
-                'y': 0
-            }
-        states = calculate_possible_states(curr_board, curr_piece)
+        
+        
 
         reward = 0.0
         
-        state, reward, terminal, end_round = self.game_state.frame_step(self._action_set)
+        actions = ACTION_MAP[a]
+        for action in actions:
+            self._action_set = np.zeros([len(self._action_set)])
+            self._action_set[action] = 1
+            state, reward_now, terminal = self.game_state.frame_step(self._action_set)
+            reward += reward_now
+            if terminal:
+                break
+        self.game_state.frame_step([1,0,0,0,0,0])
+        curr_board = board_data_tensor(self.game_state.board)
         
-    
-        states = np.concatenate([states, piece_data_tensor()])
+        curr_piece = self.game_state.fallingPiece
+        states = calculate_possible_states(curr_board, curr_piece)
+        
+        #print(states)
+        #print(piece_data_tensor())
+        #states = np.concatenate([states, np.array([piece_data_tensor()])])
         return states, reward, terminal, {}
 
     def get_image(self):
