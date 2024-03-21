@@ -33,7 +33,7 @@ class DQNAgent:
     def __init__(self, state_size, mem_size=10000, discount=0.95,
                  epsilon=1, epsilon_min=0, epsilon_stop_episode=500,
                  n_neurons=[32,32], activations=['relu', 'relu', 'linear'],
-                 loss='mse', optimizer='adam', replay_start_size=None):
+                 loss='mse', optimizer='adam', replay_start_size=None, model_path=None):
 
         assert len(activations) == len(n_neurons) + 1
 
@@ -51,6 +51,11 @@ class DQNAgent:
             replay_start_size = mem_size / 2
         self.replay_start_size = replay_start_size
         self.model = self._build_model()
+        
+        if model_path:
+            self.model = load_model(model_path)
+        else:
+            self.model = self._build_model()
 
 
     def _build_model(self):
