@@ -83,4 +83,4 @@ def dqn():
         
         
 
-
+    return agent, scores
